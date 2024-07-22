@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const pool = require("./db")
+const pool = require("./db");
+// const loginRoutes = require('./login');
+const jwt = require('jsonwebtoken');
 
 app.use(cors());
 app.use(express.json());
@@ -100,6 +102,37 @@ app.get("/history/servers", async(req, res) => {
         res.status(500).send("Server Error");
     }
 });
+
+
+
+app.post('/login', async (req, res) => {
+    const loginData = req.body.loginData;
+    const { username, password } = req.body.loginData;
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+        const user = result.rows[0];
+        if (user) {
+            if(user.userName === loginData.userName && user.password === loginData.password){
+                const token = jwt.sign({ username: user.username, role: user.role }, 'secret', { expiresIn: '300s' });
+                return res.status(200).send({ token });
+            } else {
+                console.log('Password mismatch');
+                return res.status(401).send({ error: 'Invalid username or password' });
+            }
+        } else {
+            console.log('User not found');
+            return res.status(401).send({ error: 'Invalid username or password' });
+        }
+    } catch (err) {
+        console.error('Server error:', err);
+        res.status(500).send({ error: 'Server error' });
+    }
+});
+
+
+
+
+
 
 app.listen(5000, () => {
     console.log("server 5000 port deer ajillaj baina");
