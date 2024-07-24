@@ -2,13 +2,22 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const pool = require("./db");
-// const loginRoutes = require('./login');
 const jwt = require('jsonwebtoken');
 
 app.use(cors());
 app.use(express.json());
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; 
+    if (token == null) return res.sendStatus(401); 
 
-app.post("/add", async(req,res) => {
+    jwt.verify(token, 'secret', (err, user) => {
+        if (err) return res.sendStatus(403); 
+        req.user = user;
+        next(); 
+    });
+};
+app.post("/add",authenticateToken, async(req,res) => {
     try {
         const { server_name, location, system_running, internal_address, external_address, reason_for_failure, date_of_failure, date_of_startup, status } = req.body;
         const newServer = await pool.query("INSERT INTO servers (server_name, location, system_running, internal_address, external_address, reason_for_failure, date_of_failure, date_of_startup, status) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
@@ -19,7 +28,7 @@ app.post("/add", async(req,res) => {
         console.log(err.message)
     }
 })
-app.get("/servers", async(req,res) => {
+app.get("/servers",authenticateToken, async(req,res) => {
     try {
         const allServers = await pool.query("SELECT * FROM servers");
         res.json(allServers.rows);
@@ -27,7 +36,7 @@ app.get("/servers", async(req,res) => {
         console.error(error.message)
     }
 })
-app.get("/servers/:id", async(req,res)=>{
+app.get("/servers/:id",authenticateToken, async(req,res)=>{
     try {
         const {id} = req.params;
         const server = await pool.query("SELECT * FROM servers WHERE id = $1",[id]);
@@ -37,7 +46,7 @@ app.get("/servers/:id", async(req,res)=>{
     }
 })
 
-app.put("/servers/:id", async(req,res)=>{
+app.put("/servers/:id",authenticateToken, async(req,res)=>{
     try {
         const {id} = req.params;
         const { server_name, location, system_running, internal_address, external_address, reason_for_failure, date_of_failure, date_of_startup, status } = req.body;
@@ -51,7 +60,7 @@ app.put("/servers/:id", async(req,res)=>{
     }
 })
 
-app.delete("/servers/:id",async(req,res)=>{
+app.delete("/servers/:id",authenticateToken, async(req,res)=>{
     try {
         const {id} = req.params;
         const deleteServer = await pool.query("DELETE FROM servers WHERE id = $1 RETURNING *",[id]);
@@ -60,7 +69,7 @@ app.delete("/servers/:id",async(req,res)=>{
         console.error(error.message)
     }
 })
-app.put("/servers/date/:id", async(req, res) => {
+app.put("/servers/date/:id",authenticateToken, async(req, res) => {
     try {
         const { id } = req.params;
         const { reason_for_failure, date_of_failure, date_of_startup } = req.body;
@@ -93,7 +102,7 @@ app.put("/servers/date/:id", async(req, res) => {
     }
 });
 
-app.get("/history/servers", async(req, res) => {
+app.get("/history/servers",authenticateToken, async(req, res) => {
     try {
         const history = await pool.query("SELECT * FROM server_history");
         res.json(history.rows);
@@ -113,7 +122,7 @@ app.post('/login', async (req, res) => {
         const user = result.rows[0];
         if (user) {
             if(user.userName === loginData.userName && user.password === loginData.password){
-                const token = jwt.sign({ username: user.username, role: user.role }, 'secret', { expiresIn: '300s' });
+                const token = jwt.sign({ username: user.username, role: user.role }, 'secret', { expiresIn: '24h' });
                 return res.status(200).send({ token });
             } else {
                 console.log('Password mismatch');

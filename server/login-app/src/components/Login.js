@@ -16,12 +16,13 @@ const Login = () => {
                     password: password
                 }
             });
-            localStorage.setItem('token', response.data.token);
-            const decodedToken = JSON.parse(atob(response.data.token.split('.')[1]));
+            const token = response.data.token;
+            localStorage.setItem('token', token);
+            const decodedToken = JSON.parse(atob(token.split('.')[1]));
             if (decodedToken.role === 'admin') {
-                window.location.href = 'http://localhost:3000/';
+                window.location.href = '/admin';
             } else {
-                window.location.href = 'http://localhost:3001/';
+                window.location.href = '/client';
             }
         } catch (err) {
             console.error(err);
