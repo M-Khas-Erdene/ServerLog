@@ -1,0 +1,115 @@
+body {
+    background-color: #eff4f5; 
+    font-family: 'Arial', sans-serif;
+}
+.table th, .table td {
+    word-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.table-container {
+    padding: 0 15px;
+}
+
+.container{
+    max-width: 1440px;
+    padding: 15px;
+}
+.card {
+    transition: transform 0.2s;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 20px;
+
+}
+.card:hover {
+    transform: scale(1.05);
+}
+.card-text {
+    display: flex;
+    justify-content: space-between; 
+    margin-bottom: 10px;
+}
+.card-text strong {
+    text-align: left;
+}
+.card img {
+    height: 200px;
+    object-fit: cover;
+}
+.card-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #007bff; 
+}
+.card-text span {
+    text-align: right;
+}
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+}
+button {
+    margin-left: auto;
+    min-width: 100px;
+}
+@media (min-width: 768px) {
+    .table th, .table td {
+        max-width: 150px;
+    
+    }
+}
+
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 20px;
+    }
+
+    .card img {
+        height: 150px;
+    }
+
+    .button-container {
+        justify-content: center;
+    }
+    .table th, .table td {
+        display: block;
+        width: 100%;
+
+    }
+
+    .table thead {
+        display: none;
+    }
+
+    .table tr {
+        margin-bottom: 10px;
+        display: block;
+        
+    }
+
+    .table tr td {
+        text-align: right;
+        position: relative;
+    }
+
+    .table tr td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+        white-space: nowrap;
+    }
+}

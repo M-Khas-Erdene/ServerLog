@@ -1,4 +1,4 @@
-import React, { Fragment, useState,useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import { formatDate,validate,useToken  } from '../utils/Const';
 
 const EditServer = ({ server }) => {

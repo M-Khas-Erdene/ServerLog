@@ -17,7 +17,15 @@ const authenticateToken = (req, res, next) => {
         next(); 
     });
 };
-app.post("/add",authenticateToken, async(req,res) => {
+const authorizeRole = (role) => {
+    return (req, res, next) => {
+        if (req.user.role !== role) {
+            return res.sendStatus(403);
+        }
+        next();
+    };
+};
+app.post("/add",authenticateToken,authorizeRole('admin'), async(req,res) => {
     try {
         const { server_name, location, system_running, internal_address, external_address, reason_for_failure, date_of_failure, date_of_startup, status } = req.body;
         const newServer = await pool.query("INSERT INTO servers (server_name, location, system_running, internal_address, external_address, reason_for_failure, date_of_failure, date_of_startup, status) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
@@ -46,7 +54,7 @@ app.get("/servers/:id",authenticateToken, async(req,res)=>{
     }
 })
 
-app.put("/servers/:id",authenticateToken, async(req,res)=>{
+app.put("/servers/:id",authenticateToken,authorizeRole('admin'), async(req,res)=>{
     try {
         const {id} = req.params;
         const { server_name, location, system_running, internal_address, external_address, reason_for_failure, date_of_failure, date_of_startup, status } = req.body;
@@ -60,7 +68,7 @@ app.put("/servers/:id",authenticateToken, async(req,res)=>{
     }
 })
 
-app.delete("/servers/:id",authenticateToken, async(req,res)=>{
+app.delete("/servers/:id",authenticateToken,authorizeRole('admin'), async(req,res)=>{
     try {
         const {id} = req.params;
         const deleteServer = await pool.query("DELETE FROM servers WHERE id = $1 RETURNING *",[id]);
@@ -115,21 +123,14 @@ app.get("/history/servers",authenticateToken, async(req, res) => {
 
 
 app.post('/login', async (req, res) => {
-    const loginData = req.body.loginData;
     const { username, password } = req.body.loginData;
     try {
         const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
         const user = result.rows[0];
-        if (user) {
-            if(user.userName === loginData.userName && user.password === loginData.password){
-                const token = jwt.sign({ username: user.username, role: user.role }, 'secret', { expiresIn: '24h' });
-                return res.status(200).send({ token });
-            } else {
-                console.log('Password mismatch');
-                return res.status(401).send({ error: 'Invalid username or password' });
-            }
+        if (user && user.password === password) {
+            const token = jwt.sign({ username: user.username, role: user.role }, 'secret', { expiresIn: '24h' });
+            return res.status(200).send({ token });
         } else {
-            console.log('User not found');
             return res.status(401).send({ error: 'Invalid username or password' });
         }
     } catch (err) {

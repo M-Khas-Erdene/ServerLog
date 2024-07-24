@@ -1,5 +1,6 @@
-import React, { Fragment, useState, useEffect  } from "react";
-import { validate,useToken  } from '../utils/Const';
+import React, { Fragment, useState } from "react";
+import { validate, useToken } from '../utils/Const';
+import { Modal, Button, Form, Row, Col,Container } from 'react-bootstrap';
 
 const InputServer = () => {
     const [server_name, setServerName] = useState("");
@@ -11,18 +12,20 @@ const InputServer = () => {
     const [date_of_failure, setDateOfFailure] = useState(null);
     const [date_of_startup, setDateOfStartup] = useState(null);
     const [status, setStatus] = useState("");
-    const token = useToken();
+    const [showModal, setShowModal] = useState(false);
     const [errors, setErrors] = useState({});
+    const token = useToken();
+
     const validationErrors = validate(server_name, location, internal_address, external_address, status);
 
     const onSubmitForm = async e => {
         e.preventDefault();
- 
+
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
         }
-        setErrors({}); 
+        setErrors({});
 
         try {
             if (!token) {
@@ -42,7 +45,7 @@ const InputServer = () => {
 
             const response = await fetch("http://localhost:5000/add", {
                 method: "POST",
-                headers: { "Content-Type": "application/json","Authorization": `Bearer ${token}` },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify(body)
             });
 
@@ -53,137 +56,176 @@ const InputServer = () => {
 
             window.location.reload();
         } catch (err) {
-            setErrors({ form: err.message }); 
+            setErrors({ form: err.message });
         }
     };
-
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        window.location.href = '/'; 
+    };
     return (
         <Fragment>
-            <h1 className="text-center mt-5">Input Server</h1>
-            <div className="form-container">
-                <form className="d-flex flex-column mt-5" onSubmit={onSubmitForm}>
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            className={`form-control ${errors.server_name ? 'is-invalid' : ''}`}
-                            value={server_name}
-                            onChange={e => setServerName(e.target.value)}
-                            placeholder="Enter server name"
-                        />
-                        {errors.server_name && <div className="invalid-feedback">{errors.server_name}</div>}
-                    </div>
+            <Container className="d-flex justify-content-between mt-5">
+                <Button variant="warning" onClick={() => setShowModal(true)}>
+                    + Add New Server
+                </Button>
+                <Button variant="primary" onClick={handleLogout} className="ml-auto" style={{ minWidth: '150px' }}>
+                    Log out
+                </Button>
+            </Container>
 
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            className={`form-control mt-3 ${errors.location ? 'is-invalid' : ''}`}
-                            value={location}
-                            onChange={e => setLocation(e.target.value)}
-                            placeholder="Enter location"
-                        />
-                        {errors.location && <div className="invalid-feedback">{errors.location}</div>}
-                    </div>
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Add New Server</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={onSubmitForm}>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="4">Server Name</Form.Label>
+                            <Col sm="8">
+                                <Form.Control
+                                    type="text"
+                                    value={server_name}
+                                    onChange={e => setServerName(e.target.value)}
+                                    isInvalid={!!errors.server_name}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.server_name}
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Form.Group>
 
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            className={`form-control mt-3 ${errors.system_running ? 'is-invalid' : ''}`}
-                            value={system_running}
-                            onChange={e => setSystemRunning(e.target.value)}
-                            placeholder="Enter system running"
-                        />
-                        {errors.system_running && <div className="invalid-feedback">{errors.system_running}</div>}
-                    </div>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="4">Location</Form.Label>
+                            <Col sm="8">
+                                <Form.Control
+                                    type="text"
+                                    value={location}
+                                    onChange={e => setLocation(e.target.value)}
+                                    isInvalid={!!errors.location}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.location}
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Form.Group>
 
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            className={`form-control mt-3 ${errors.internal_address ? 'is-invalid' : ''}`}
-                            value={internal_address}
-                            onChange={e => setInternalAddress(e.target.value)}
-                            placeholder="Enter internal address"
-                        />
-                        {errors.internal_address && <div className="invalid-feedback">{errors.internal_address}</div>}
-                    </div>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="4">System Running</Form.Label>
+                            <Col sm="8">
+                                <Form.Control
+                                    type="text"
+                                    value={system_running}
+                                    onChange={e => setSystemRunning(e.target.value)}
+                                    isInvalid={!!errors.system_running}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.system_running}
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Form.Group>
 
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            className={`form-control mt-3 ${errors.external_address ? 'is-invalid' : ''}`}
-                            value={external_address}
-                            onChange={e => setExternalAddress(e.target.value)}
-                            placeholder="Enter external address"
-                        />
-                        {errors.external_address && <div className="invalid-feedback">{errors.external_address}</div>}
-                    </div>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="4">Internal Address</Form.Label>
+                            <Col sm="8">
+                                <Form.Control
+                                    type="text"
+                                    value={internal_address}
+                                    onChange={e => setInternalAddress(e.target.value)}
+                                    isInvalid={!!errors.internal_address}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.internal_address}
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Form.Group>
 
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            className="form-control mt-3"
-                            value={reason_for_failure}
-                            onChange={e => setReasonForFailure(e.target.value)}
-                            placeholder="Enter reason for failure"
-                        />
-                    </div>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="4">External Address</Form.Label>
+                            <Col sm="8">
+                                <Form.Control
+                                    type="text"
+                                    value={external_address}
+                                    onChange={e => setExternalAddress(e.target.value)}
+                                    isInvalid={!!errors.external_address}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.external_address}
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Form.Group>
 
-                    <div className="form-group">
-                        <input
-                            type="datetime-local"
-                            className="form-control mt-3"
-                            value={date_of_failure}
-                            onChange={e => setDateOfFailure(e.target.value || null)}
-                        />
-                    </div>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="4">Reason for Failure</Form.Label>
+                            <Col sm="8">
+                                <Form.Control
+                                    type="text"
+                                    value={reason_for_failure}
+                                    onChange={e => setReasonForFailure(e.target.value)}
+                                />
+                            </Col>
+                        </Form.Group>
 
-                    <div className="form-group">
-                        <input
-                            type="datetime-local"
-                            className="form-control mt-3"
-                            value={date_of_startup}
-                            onChange={e => setDateOfStartup(e.target.value || null)}
-                        />
-                    </div>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="4">Date of Failure</Form.Label>
+                            <Col sm="8">
+                                <Form.Control
+                                    type="datetime-local"
+                                    value={date_of_failure}
+                                    onChange={e => setDateOfFailure(e.target.value || null)}
+                                />
+                            </Col>
+                        </Form.Group>
 
-                    <div className="d-flex mt-3 mb-3">
-                        <div>
-                            <input
-                                type="radio"
-                                id="active"
-                                name="status"
-                                value="active"
-                                checked={status === "active"}
-                                onChange={e => setStatus(e.target.value)}
-                            />
-                            <label htmlFor="active" className="ml-1">Active</label>
-                        </div>
-                        <div className="ml-5">
-                            <input
-                                type="radio"
-                                id="inactive"
-                                name="status"
-                                value="inactive"
-                                checked={status === "inactive"}
-                                onChange={e => setStatus(e.target.value)}
-                            />
-                            <label htmlFor="inactive" className="ml-1">Inactive</label>
-                        </div>
-                        {errors.status && <div className="ml-5 text-danger">{errors.status}</div>}
-                    </div>
-                    
-                    <button className="btn btn-success">Add</button>
-                    
-                </form>
-                
-                {errors.form && <div className="form-error">{errors.form}</div>}
-                
-            </div>
-            
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="4">Date of Startup</Form.Label>
+                            <Col sm="8">
+                                <Form.Control
+                                    type="datetime-local"
+                                    value={date_of_startup}
+                                    onChange={e => setDateOfStartup(e.target.value || null)}
+                                />
+                            </Col>
+                        </Form.Group>
+
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="4">Status</Form.Label>
+                            <Col sm="8">
+                                <div>
+                                    <Form.Check
+                                        inline
+                                        type="radio"
+                                        label="Active"
+                                        id="active"
+                                        name="status"
+                                        value="active"
+                                        checked={status === "active"}
+                                        onChange={e => setStatus(e.target.value)}
+                                    />
+                                    <Form.Check
+                                        inline
+                                        type="radio"
+                                        label="Inactive"
+                                        id="inactive"
+                                        name="status"
+                                        value="inactive"
+                                        checked={status === "inactive"}
+                                        onChange={e => setStatus(e.target.value)}
+                                    />
+                                </div>
+                                {errors.status && <div className="text-danger">{errors.status}</div>}
+                            </Col>
+                        </Form.Group>
+
+                        <Button variant="success" type="submit">
+                            Add
+                        </Button>
+                    </Form>
+                    {errors.form && <div className="form-error text-danger mt-3">{errors.form}</div>}
+                </Modal.Body>
+            </Modal>
         </Fragment>
-        
     );
-
-
 };
 
 export default InputServer;

@@ -6,42 +6,48 @@ import InputServer from "./admin/InputServer";
 import AdminList from "./admin/ListServer";
 import ClientList from "./client/ListServer";
 import HistoryServer from "./client/HistoryServer";
+
 function App() {
     const [logged,setLogged] = useState(false)
+    const [role, setRole] = useState('');
     useEffect(()=>{ 
-        checkLogin();
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken = JSON.parse(atob(token.split('.')[1]));
+            setRole(decodedToken.role);
+            setLogged(true);
+        }
     },[]);
-
-    const checkLogin = ()=>{
-        setLogged(true);
-    }
 
     return (
         
         <Router>
-            <Routes>
-                <Route path="/" element={<Login />} />
-                {logged ? (
-                    <>
+        <Routes>
+            <Route path="/" element={<Login />} />
+            {logged ? (
+                <>
+                    {role === 'admin' && (
                         <Route path="/admin" element={
                             <div className="container">
                                 <InputServer />
                                 <AdminList />
                             </div>
                         } />
+                    )}
+                    {(
                         <Route path="/client" element={
                             <div className="container">
-                                <h1 className="mt-5 text-center">ML SERVERS</h1>
                                 <ClientList />
                                 <HistoryServer />
                             </div>
                         } />
-                    </>
-                ) : (
-                    <Route path="/" element={<Login />} />
-                )}
-            </Routes>
-        </Router>
+                    )}
+                </>
+            ) : (
+                <Route path="/" element={<Login />} />
+            )}
+        </Routes>
+    </Router>
     );
 }
 
