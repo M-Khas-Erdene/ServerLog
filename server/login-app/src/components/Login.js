@@ -22,7 +22,7 @@ const Login = () => {
             if (decodedToken.role === 'admin') {
                 window.location.href = '/admin';
             } else {
-                window.location.href = '/client';
+                window.location.href = '/';
             }
         } catch (err) {
             console.error(err);

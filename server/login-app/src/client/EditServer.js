@@ -37,14 +37,14 @@ const EditServer = ({ server }) => {
     return (
         <Fragment>
             <button type="button" className="btn btn-warning" data-toggle="modal" data-target={`#id${server.id}`}>
-                Edit
+                Change State
             </button>
 
             <div className="modal" id={`id${server.id}`}>
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h4 className="modal-title">Edit Server</h4>
+        
                             <button type="button" className="close" data-dismiss="modal">
                                 &times;
                             </button>

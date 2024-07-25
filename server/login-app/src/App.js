@@ -6,6 +6,8 @@ import InputServer from "./admin/InputServer";
 import AdminList from "./admin/ListServer";
 import ClientList from "./client/ListServer";
 import HistoryServer from "./client/HistoryServer";
+import ErrorPage from './components/ErrorPage';
+
 
 function App() {
     const [logged,setLogged] = useState(false)
@@ -23,9 +25,10 @@ function App() {
         
         <Router>
         <Routes>
-            <Route path="/" element={<Login />} />
+        <Route path="*" element={<ErrorPage />} />
             {logged ? (
                 <>
+                
                     {role === 'admin' && (
                         <Route path="/admin" element={
                             <div className="container">
@@ -35,7 +38,7 @@ function App() {
                         } />
                     )}
                     {(
-                        <Route path="/client" element={
+                        <Route path="/" element={
                             <div className="container">
                                 <ClientList />
                                 <HistoryServer />
@@ -44,8 +47,13 @@ function App() {
                     )}
                 </>
             ) : (
+                <>
                 <Route path="/" element={<Login />} />
+                <Route path="/error" element={<ErrorPage />} />
+            </>
             )}
+            <Route path="*" element={<ErrorPage />} />
+            <Route path="/error" element={<ErrorPage />} />
         </Routes>
     </Router>
     );
