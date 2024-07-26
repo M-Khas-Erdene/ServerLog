@@ -35,7 +35,7 @@ body {
 .card-text {
     display: flex;
     justify-content: space-between; 
-    margin-bottom: 10px;
+    margin-bottom: 2cqi;
 }
 .card-text strong {
     text-align: left;
@@ -45,18 +45,23 @@ body {
     object-fit: cover;
 }
 .card-title {
+    text-align: center;
     font-size: 1.5em;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     color: #007bff; 
 }
 .card-text span {
     text-align: right;
+}
+.card-row-padding {
+    padding: 10px;
 }
 .button-container {
     display: flex;
     justify-content: flex-end;
 }
 button {
+    
     min-width: 100px;
 }
 @media (min-width: 768px) {
@@ -67,6 +72,9 @@ button {
 }
 
 @media (max-width: 768px) {
+    .h1{
+        font-size:  2rem;
+    }
     .card {
         margin-bottom: 20px;
     }
@@ -109,5 +117,21 @@ button {
         text-align: left;
         white-space: nowrap;
     }
+}
+.modal-content{
+    left:auto;
+    right: auto;
+}
+
+
+
+.btn-close{
+    padding-top: 5px;
+    min-width: 20px;
+    
+}
+
+.modal {
+    background-color: rgba(0, 0, 0, 0.85); 
 }
 

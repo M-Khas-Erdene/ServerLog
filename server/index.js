@@ -67,11 +67,38 @@ app.put("/servers/:id",authenticateToken,authorizeRole('admin'), async(req,res)=
         console.error(error.message)
     }
 })
+app.put("/history/:id",authenticateToken,authorizeRole('admin'), async(req,res)=>{
+    try {
+        const {id} = req.params;
+        const {reason_for_failure, date_of_failure, date_of_startup} = req.body;
+        
+        let newStatus;
+        if (date_of_failure && date_of_startup) {
+            newStatus = new Date(date_of_failure) > new Date(date_of_startup) ? "inactive" : "active";
+        }
+        const updateServer = await pool.query(
+            "UPDATE server_history SET reason_for_failure = $1, date_of_failure = $2, date_of_startup = $3, status = $4 WHERE id = $5 RETURNING *",
+            [reason_for_failure, date_of_failure, date_of_startup, newStatus, id]
+        );
+        res.json(updateServer.rows[0]);
+    } catch (error) {
+        console.error(error.message)
+    }
+})
 
 app.delete("/servers/:id",authenticateToken,authorizeRole('admin'), async(req,res)=>{
     try {
         const {id} = req.params;
         const deleteServer = await pool.query("DELETE FROM servers WHERE id = $1 RETURNING *",[id]);
+        res.json({ message: "Server deleted successfully", server: deleteServer.rows[0] });
+    } catch (error) {
+        console.error(error.message)
+    }
+})
+app.delete("/history/:id",authenticateToken,authorizeRole('admin'), async(req,res)=>{
+    try {
+        const {id} = req.params;
+        const deleteServer = await pool.query("DELETE FROM server_history WHERE id = $1 RETURNING *",[id]);
         res.json({ message: "Server deleted successfully", server: deleteServer.rows[0] });
     } catch (error) {
         console.error(error.message)

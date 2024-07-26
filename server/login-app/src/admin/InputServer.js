@@ -2,6 +2,7 @@ import React, { Fragment, useState } from "react";
 import { validate, useToken } from '../utils/Const';
 import { Modal, Button, Form, Row, Col,Container } from 'react-bootstrap';
 
+
 const InputServer = () => {
     const [server_name, setServerName] = useState("");
     const [location, setLocation] = useState("");
@@ -63,15 +64,24 @@ const InputServer = () => {
         localStorage.removeItem('token');
         window.location.href = '/'; 
     };
+    const handleClient = () => {
+        window.location.href = '/'; 
+    };
+
     return (
         <Fragment>
             <Container className="d-flex justify-content-between mt-5">
                 <Button variant="warning" onClick={() => setShowModal(true)}>
                     + Add New Server
                 </Button>
-                <Button variant="primary" onClick={handleLogout} className="ml-auto" style={{ minWidth: '150px' }}>
-                    Log out
-                </Button>
+                <div>
+                <Button variant="primary" onClick={handleClient} className="ml-2">
+                        Client page
+                    </Button>
+                    <Button variant="danger" onClick={handleLogout} className="ml-2">
+                        Log out
+                    </Button>
+                </div>
             </Container>
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>

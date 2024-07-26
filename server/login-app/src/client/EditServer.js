@@ -40,9 +40,9 @@ const EditServer = ({ server }) => {
                 Change State
             </button>
 
-            <div className="modal" id={`id${server.id}`}>
+            <div className="modal fade" id={`id${server.id}`}>
                 <div className="modal-dialog">
-                    <div className="modal-content">
+                    <div className="modal-content ">
                         <div className="modal-header">
         
                             <button type="button" className="close" data-dismiss="modal">
