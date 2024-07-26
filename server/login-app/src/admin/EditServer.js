@@ -163,24 +163,24 @@ const EditServer = ({ server }) => {
                                     <div>
                                         <input
                                             type="radio"
-                                            id={`active${server.id}`}
+                                            id={`Active${server.id}`}
                                             name="status"
-                                            value="active"
-                                            checked={status === "active"}
+                                            value="Active"
+                                            checked={status === "Active"}
                                             onChange={e => setStatus(e.target.value)}
                                         />
-                                        <label htmlFor={`active${server.id}`} className="ml-1">Active</label>
+                                        <label htmlFor={`Active${server.id}`} className="ml-1">Active</label>
                                     </div>
                                     <div>
                                         <input
                                             type="radio"
-                                            id={`inactive${server.id}`}
+                                            id={`InActive${server.id}`}
                                             name="status"
-                                            value="inactive"
-                                            checked={status === "inactive"}
+                                            value="InActive"
+                                            checked={status === "InActive"}
                                             onChange={e => setStatus(e.target.value)}
                                         />
-                                        <label htmlFor={`inactive${server.id}`} className="ml-1">Inactive</label>
+                                        <label htmlFor={`InActive${server.id}`} className="ml-1">InActive</label>
                                     </div>
                                     {errors.status && <div className="text-danger">{errors.status}</div>}
                                 </div>

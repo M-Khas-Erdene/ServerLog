@@ -28,18 +28,16 @@ body {
 
 .card-body {
     padding: 20px;
-    
+    text-align: right;
 
 }
 
 .card-text {
-    display: flex;
-    justify-content: space-between; 
+ 
+
     margin-bottom: 2cqi;
 }
-.card-text strong {
-    text-align: left;
-}
+
 .card img {
     height: 200px;
     object-fit: cover;
@@ -142,4 +140,13 @@ button {
 
 .action-buttons .btn:last-child {
     margin-right: 0;
+}
+.card-active {
+    border: 1px solid green;
+    background-color: #f0faf2;
+}
+
+.card-inactive {
+    border: 1px solid red;
+    background-color: #f8d7da;
 }

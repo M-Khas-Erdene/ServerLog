@@ -74,7 +74,7 @@ app.put("/history/:id",authenticateToken,authorizeRole('admin'), async(req,res)=
         const username = req.user.username;
         let newStatus;
         if (date_of_failure && date_of_startup) {
-            newStatus = new Date(date_of_failure) > new Date(date_of_startup) ? "inactive" : "active";
+            newStatus = new Date(date_of_failure) > new Date(date_of_startup) ? "Inactive" : "Active";
         }
         const updateServer = await pool.query(
             "UPDATE server_history SET reason_for_failure = $1, date_of_failure = $2, date_of_startup = $3, status = $4, username = $5 WHERE id = $6 RETURNING *",
@@ -120,7 +120,7 @@ app.put("/servers/date/:id",authenticateToken, async(req, res) => {
  
             let newStatus = current_status;
             if (date_of_failure && date_of_startup) {
-                newStatus = new Date(date_of_failure) > new Date(date_of_startup) ? "inActive" : "Active";
+                newStatus = new Date(date_of_failure) > new Date(date_of_startup) ? "InActive" : "Active";
             }
 
             const updateServer = await pool.query(
