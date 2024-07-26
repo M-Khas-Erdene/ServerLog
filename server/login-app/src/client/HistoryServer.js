@@ -4,13 +4,15 @@ import { useToken } from '../utils/Const';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
 import '../ListServer.css'; 
 import { jwtDecode } from 'jwt-decode';
-import '../ListServer.css';
+
 
 const HistoryServer = () => {
     const [history, setHistory] = useState([]);
     const [editingRecord, setEditingRecord] = useState(null);
     const token = useToken();
     const userRole = token ? jwtDecode(token).role : null;
+    const username = token ? jwtDecode(token).username : null;
+
     const getHistory = useCallback(async () => {
         try {
             const response = await fetch("http://localhost:5000/history/servers", {
@@ -23,13 +25,14 @@ const HistoryServer = () => {
         } catch (error) {
             console.error(error.message);
         }
-    },[token]);
+    }, [token]);
 
     useEffect(() => {
         if (token) {
             getHistory();
         }
     }, [token, getHistory]);
+
     const deleteServer = async (id) => { 
         try {
             await fetch(`http://localhost:5000/history/${id}`, {
@@ -43,6 +46,7 @@ const HistoryServer = () => {
             console.error(error.message);
         }
     };
+
     const updateHistory = async (e) => {
         e.preventDefault();
         try {
@@ -53,7 +57,7 @@ const HistoryServer = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ server_name, reason_for_failure, date_of_failure, date_of_startup, status }),
+                body: JSON.stringify({ server_name, reason_for_failure, date_of_failure, date_of_startup, status, username }),
             });
             setEditingRecord(null);
             getHistory(); 
@@ -61,9 +65,11 @@ const HistoryServer = () => {
             console.error(error.message);
         }
     };
+
     const handleEditClick = (record) => {
         setEditingRecord(record);
     };
+
     return (
         <Fragment>
             <div className="table-container mb-5 mt-3">
@@ -71,18 +77,20 @@ const HistoryServer = () => {
                 <Table striped bordered hover responsive className="mt-3 text-center">
                     <thead>
                         <tr>
-                            <th >Server Name</th>
-                            <th >Reason for Failure</th>
-                            <th >Date of Failure</th>
-                            <th >Date of Startup</th>
-                            <th >Status</th>
-                            <th >Change Timestamp</th> 
+                            <th>User Name</th>
+                            <th>Server Name</th>
+                            <th>Reason for Failure</th>
+                            <th>Date of Failure</th>
+                            <th>Date of Startup</th>
+                            <th>Status</th>
+                            <th>Change Timestamp</th> 
                             {userRole === 'admin' && <th>Actions</th>}
                         </tr>
                     </thead>
                     <tbody>
                         {history.map(record => (
                             <tr key={record.id}>
+                                <td>{record.username}</td>
                                 <td data-label="Server Name">{record.server_name}</td>
                                 <td data-label="Reason for Failure">{record.reason_for_failure}</td>
                                 <td data-label="Date of Failure">{formatDate(record.date_of_failure)}</td>
@@ -91,12 +99,14 @@ const HistoryServer = () => {
                                 <td data-label="Change Timestamp">{formatDate(record.change_timestamp)}</td>
                                 {userRole === 'admin' && (
                                     <td data-label="Actions">
-                                        <Button variant="warning" onClick={() => handleEditClick(record)}>
+                                        <div className="action-buttons">
+                                        <Button variant="warning" onClick={() => handleEditClick(record) }  className="me-2">
                                             Edit
                                         </Button>
                                         <Button variant="danger" onClick={() => deleteServer(record.id)}>
                                             Delete
                                         </Button>
+                                        </div>
                                     </td>
                                 )}
                             </tr>
@@ -104,7 +114,7 @@ const HistoryServer = () => {
                     </tbody>
                 </Table>
             </div>
-            {/* Edit Modal */}
+    
             {editingRecord && (
                 <Modal show onHide={() => setEditingRecord(null)}>
                     <Modal.Header closeButton>

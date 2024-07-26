@@ -56,7 +56,7 @@ app.get("/servers/:id",authenticateToken, async(req,res)=>{
 
 app.put("/servers/:id",authenticateToken,authorizeRole('admin'), async(req,res)=>{
     try {
-        const {id} = req.params;
+        const {id} = req.params;    
         const { server_name, location, system_running, internal_address, external_address, reason_for_failure, date_of_failure, date_of_startup, status } = req.body;
         const updateServer = await pool.query(
             "UPDATE servers SET server_name = $1, location = $2, system_running = $3, internal_address = $4, external_address = $5, reason_for_failure = $6, date_of_failure = $7, date_of_startup = $8, status = $9 WHERE id = $10 RETURNING *",
@@ -71,14 +71,14 @@ app.put("/history/:id",authenticateToken,authorizeRole('admin'), async(req,res)=
     try {
         const {id} = req.params;
         const {reason_for_failure, date_of_failure, date_of_startup} = req.body;
-        
+        const username = req.user.username;
         let newStatus;
         if (date_of_failure && date_of_startup) {
             newStatus = new Date(date_of_failure) > new Date(date_of_startup) ? "inactive" : "active";
         }
         const updateServer = await pool.query(
-            "UPDATE server_history SET reason_for_failure = $1, date_of_failure = $2, date_of_startup = $3, status = $4 WHERE id = $5 RETURNING *",
-            [reason_for_failure, date_of_failure, date_of_startup, newStatus, id]
+            "UPDATE server_history SET reason_for_failure = $1, date_of_failure = $2, date_of_startup = $3, status = $4, username = $5 WHERE id = $6 RETURNING *",
+            [reason_for_failure, date_of_failure, date_of_startup, newStatus,username, id]
         );
         res.json(updateServer.rows[0]);
     } catch (error) {
@@ -108,15 +108,16 @@ app.put("/servers/date/:id",authenticateToken, async(req, res) => {
     try {
         const { id } = req.params;
         const { reason_for_failure, date_of_failure, date_of_startup } = req.body;
+        const username = req.user.username;
         const currentServer = await pool.query("SELECT * FROM servers WHERE id = $1", [id]);
 
         if (currentServer.rows.length > 0) {
             const {server_name: current_server_name, reason_for_failure: current_reason_for_failure, date_of_failure: current_date_of_failure, date_of_startup: current_date_of_startup, status: current_status } = currentServer.rows[0];
             await pool.query(
-                "INSERT INTO server_history (server_name, reason_for_failure, date_of_failure, date_of_startup, status) VALUES ($1, $2, $3, $4, $5)",
-                [current_server_name, current_reason_for_failure, current_date_of_failure, current_date_of_startup, current_status]
+                "INSERT INTO server_history (server_name, reason_for_failure, date_of_failure, date_of_startup, status, username) VALUES ($1, $2, $3, $4, $5,$6)",
+                [current_server_name, current_reason_for_failure, current_date_of_failure, current_date_of_startup, current_status,username]
             );
-
+ 
             let newStatus = current_status;
             if (date_of_failure && date_of_startup) {
                 newStatus = new Date(date_of_failure) > new Date(date_of_startup) ? "inActive" : "Active";

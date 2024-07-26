@@ -1,10 +1,8 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import { formatDate } from '../utils/Const';
 import { useToken  } from '../utils/Const';
 
 const EditServer = ({ server }) => {
-
-
     const [reason_for_failure, setReasonForFailure] = useState(server.reason_for_failure);
     const [date_of_failure, setDateOfFailure] = useState(formatDate(server.date_of_failure));
     const [date_of_startup, setDateOfStartup] = useState(formatDate(server.date_of_startup));

@@ -122,16 +122,24 @@ button {
     left:auto;
     right: auto;
 }
-
-
-
 .btn-close{
     padding-top: 5px;
     min-width: 20px;
-    
 }
 
 .modal {
     background-color: rgba(0, 0, 0, 0.85); 
 }
 
+.action-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.action-buttons .btn {
+    margin-right: 0.5rem;
+}
+
+.action-buttons .btn:last-child {
+    margin-right: 0;
+}
