@@ -44,7 +44,7 @@ const InputServer = () => {
                 status
             };
 
-            const response = await fetch("http://localhost:5000/add", {
+            const response = await fetch("http://192.168.1.202:5000/add", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify(body)

@@ -11,7 +11,7 @@ const ListServer = () => {
 
     const getServer = useCallback(async () => {
         try {
-            const response = await fetch("http://localhost:5000/servers", {
+            const response = await fetch("http://192.168.1.202:5000/servers", {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
@@ -34,7 +34,7 @@ const ListServer = () => {
             if (!token) {
                 throw new Error('Token not found');
             }
-            await fetch(`http://localhost:5000/servers/${id}`, {
+            await fetch(`http://192.168.1.202:5000/servers/${id}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Bearer ${token}` }
             });

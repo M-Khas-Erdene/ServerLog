@@ -15,7 +15,7 @@ const HistoryServer = () => {
 
     const getHistory = useCallback(async () => {
         try {
-            const response = await fetch("http://localhost:5000/history/servers", {
+            const response = await fetch("http://192.168.1.202:5000/history/servers", {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
@@ -35,7 +35,7 @@ const HistoryServer = () => {
 
     const deleteServer = async (id) => { 
         try {
-            await fetch(`http://localhost:5000/history/${id}`, {
+            await fetch(`http://192.168.1.202:5000/history/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -51,7 +51,7 @@ const HistoryServer = () => {
         e.preventDefault();
         try {
             const { id, server_name, reason_for_failure, date_of_failure, date_of_startup, status } = editingRecord;
-            await fetch(`http://localhost:5000/history/${id}`, {
+            await fetch(`http://192.168.1.202:5000/history/${id}`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',

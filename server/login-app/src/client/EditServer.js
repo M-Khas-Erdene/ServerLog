@@ -16,7 +16,7 @@ const EditServer = ({ server }) => {
                 date_of_failure: date_of_failure || null,
                 date_of_startup: date_of_startup || null,
             };
-            const response = await fetch(`http://localhost:5000/servers/date/${server.id}`, {
+            const response = await fetch(`http://192.168.1.202:5000/servers/date/${server.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(body)

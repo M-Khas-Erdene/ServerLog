@@ -13,7 +13,7 @@ const ListServer = () => {
     const [servers, setServers] = useState([]);
     const getServer = useCallback(async () => {
         try {
-            const response = await fetch("http://localhost:5000/servers", {
+            const response = await fetch("http://192.168.1.202:5000/servers", {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
@@ -64,8 +64,11 @@ const ListServer = () => {
                                     <Card.Title>{server.server_name}</Card.Title>
                                     <Card.Text>{server.location}</Card.Text>
                                     <Card.Text>{server.system_running}</Card.Text>
-                                    <Card.Text>{server.reason_for_failure}</Card.Text>
-                                    <Card.Text>{server.status}</Card.Text>
+                                  
+                                    <Card.Text>
+                                        <span className={`circle ${server.status === 'Active' ? 'circle-green' : 'circle-red'}`}></span>
+                                        {server.reason_for_failure}
+                                    </Card.Text>
                                     <div className="text-center mt-3">
                                         <EditServer server={server} />
                                     </div>

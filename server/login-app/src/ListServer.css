@@ -14,7 +14,7 @@ body {
 
 .container{
     max-width: 1920px;
-    padding: 15px;
+    padding: 5px;
 }
 .card {
     transition: transform 0.2s;
@@ -27,16 +27,12 @@ body {
 }
 
 .card-body {
-    padding: 20px;
-    text-align: right;
+    padding: 10px;
+    text-align: center;
 
 }
 
-.card-text {
- 
 
-    margin-bottom: 2cqi;
-}
 
 .card img {
     height: 200px;
@@ -44,12 +40,18 @@ body {
 }
 .card-title {
     text-align: center;
-    font-size: 1.5em;
+    font-size: 1.6em;
     margin-bottom: 15px;
     color: #007bff; 
+    font-weight: bold;
+}
+.card-text {
+    font-size: 1.2em;
+    font-weight:500;
 }
 .card-text span {
     text-align: right;
+
 }
 .card-row-padding {
     padding: 10px;
@@ -116,10 +118,7 @@ button {
         white-space: nowrap;
     }
 }
-.modal-content{
-    left:auto;
-    right: auto;
-}
+
 .btn-close{
     padding-top: 5px;
     min-width: 20px;
@@ -143,10 +142,25 @@ button {
 }
 .card-active {
     border: 1px solid green;
-    background-color: #f0faf2;
+
 }
 
 .card-inactive {
     border: 1px solid red;
     background-color: #f8d7da;
+}
+.circle {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.circle-green {
+    background-color: green;
+}
+
+.circle-red {
+    background-color: red;
 }
