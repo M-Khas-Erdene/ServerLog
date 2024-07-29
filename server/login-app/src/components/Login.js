@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Container, Form, Button, Alert } from 'react-bootstrap';
-
+import { Container, Form, Button, Alert, Row, Col } from 'react-bootstrap';
+import errorIMG from '../assets/errorBack.jpg'; 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -35,38 +35,45 @@ const Login = () => {
     };
 
     return (
-        <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-            <div className="w-100" style={{ maxWidth: '400px' }}>
-                <h2 className="text-center mb-4">Login</h2>
-                {error && <Alert variant="danger">{error}</Alert>}
-                <Form onSubmit={handleSubmit}>
-                    <Form.Group controlId="formUsername">
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control 
-                            type="text" 
-                            value={username} 
-                            onChange={(e) => setUsername(e.target.value)} 
-                            placeholder="Enter username" 
-                            required 
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formPassword" className="mt-3">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control 
-                            type="password" 
-                            value={password} 
-                            onChange={(e) => setPassword(e.target.value)} 
-                            placeholder="Password" 
-                            required 
-                        />
-                    </Form.Group>
-                    <Button variant="primary" type="submit" className="mt-4 w-100">
-                        Login
-                    </Button>
-                </Form>
-            </div>
+        <Container fluid className="d-flex align-items-center" >
+            <Row className="w-100">
+                <Col md={6} className="d-none d-md-flex justify-content-center align-items-center">
+                    <img src={errorIMG} alt="Large" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                </Col>
+                <Col md={6}  className="d-flex justify-content-center align-items-center">
+                    <div className="w-100" style={{ maxWidth: '400px' }}>
+                        <h2 className="text-center mb-4">Login</h2>
+                        {error && <Alert variant="danger">{error}</Alert>}
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group controlId="formUsername">
+                                <Form.Label>Username</Form.Label>
+                                <Form.Control 
+                                    type="text" 
+                                    value={username} 
+                                    onChange={(e) => setUsername(e.target.value)} 
+                                    placeholder="Enter username" 
+                                    required 
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="formPassword" className="mt-3">
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control 
+                                    type="password" 
+                                    value={password} 
+                                    onChange={(e) => setPassword(e.target.value)} 
+                                    placeholder="Password" 
+                                    required 
+                                />
+                            </Form.Group>
+                            <Button variant="primary" type="submit" className="mt-4 w-100">
+                                Login
+                            </Button>
+                        </Form>
+                    </div>
+                </Col>
+            </Row>
         </Container>
     );
-};
+}
 
 export default Login;

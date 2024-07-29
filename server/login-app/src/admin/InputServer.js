@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { validate, useToken } from '../utils/Const';
 import { Modal, Button, Form, Row, Col,Container } from 'react-bootstrap';
-
+import useAxios from "../utils/axios";
 
 const InputServer = () => {
     const [server_name, setServerName] = useState("");
@@ -18,7 +18,7 @@ const InputServer = () => {
     const token = useToken();
 
     const validationErrors = validate(server_name, location, internal_address, external_address, status);
-
+    const axiosInstance = useAxios();
     const onSubmitForm = async e => {
         e.preventDefault();
 
@@ -44,15 +44,9 @@ const InputServer = () => {
                 status
             };
 
-            const response = await fetch("http://192.168.1.202:5000/add", {
-                method: "POST",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify(body)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Something went wrong");
+            const response = await axiosInstance.post("/add",body);
+            if (response.status !== 200) {
+                throw new Error("Something went wrong");
             }
 
             window.location.reload();

@@ -5,7 +5,7 @@ export const useToken = () => {
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
-            console.log("Token found: ", storedToken);
+
             setToken(storedToken);
         } else {
             console.log("Token not found");

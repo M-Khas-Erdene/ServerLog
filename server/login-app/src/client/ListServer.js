@@ -6,30 +6,24 @@ import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import serverIMG from '../assets/serverIMG.jpg'; 
 import {jwtDecode} from 'jwt-decode';
 import '../ListServer.css';
-
+import useAxios from "../utils/axios";
 const ListServer = () => {
     const token = useToken();
     const userRole = token ? jwtDecode(token).role : null;
     const [servers, setServers] = useState([]);
+    const axiosInstance = useAxios();
     const getServer = useCallback(async () => {
         try {
-            const response = await fetch("http://192.168.1.202:5000/servers", {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
-            });
-            const jsonData = await response.json();
-            setServers(jsonData);
+            const response = await axiosInstance.get("/servers");
+            setServers(response.data);
         } catch (error) {
             console.error(error.message);
         }
-    }, [token]);
+    }, [axiosInstance]);
 
     useEffect(() => {
-        if (token) {
             getServer();
-        }
-    }, [token, getServer]);
+    }, [ getServer]);
 
     const handleLogout = () => {
         localStorage.removeItem('token');

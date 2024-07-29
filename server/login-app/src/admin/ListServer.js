@@ -1,43 +1,30 @@
 import React, { Fragment, useEffect, useState,useCallback} from "react";
 import EditServer from "./EditServer";
 import { formatDate } from '../utils/Const';
-import { useToken } from '../utils/Const';
 import { Table, Button } from 'react-bootstrap';
 import '../ListServer.css';
-
+import useAxios from "../utils/axios";
 const ListServer = () => {
-    const token = useToken();
-    const [servers, setServers] = useState([]);
 
+    const [servers, setServers] = useState([]);
+    const axiosInstance = useAxios();
     const getServer = useCallback(async () => {
+        
         try {
-            const response = await fetch("http://192.168.1.202:5000/servers", {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
-            });
-            const jsonData = await response.json();
-            setServers(jsonData);
+            const response = await axiosInstance.get("/servers");
+            setServers(response.data);
         } catch (error) {
             console.error(error.message);
         }
-    },[token]);
+    },[axiosInstance]);
 
     useEffect(() => {
-        if (token) {
             getServer();
-        }
-    }, [token, getServer]);
+    },[getServer]);
 
     const deleteServer = async id => {
         try {
-            if (!token) {
-                throw new Error('Token not found');
-            }
-            await fetch(`http://192.168.1.202:5000/servers/${id}`, {
-                method: "DELETE",
-                headers: { "Authorization": `Bearer ${token}` }
-            });
+            await axiosInstance.delete(`/servers/${id}`);
             setServers(servers.filter(server => server.id !== id));
         } catch (err) {
             console.error(err.message);

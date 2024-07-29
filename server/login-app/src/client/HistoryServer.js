@@ -4,7 +4,7 @@ import { useToken } from '../utils/Const';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
 import '../ListServer.css'; 
 import { jwtDecode } from 'jwt-decode';
-
+import useAxios from "../utils/axios";
 
 const HistoryServer = () => {
     const [history, setHistory] = useState([]);
@@ -12,35 +12,25 @@ const HistoryServer = () => {
     const token = useToken();
     const userRole = token ? jwtDecode(token).role : null;
     const username = token ? jwtDecode(token).username : null;
+    const axiosInstance = useAxios();
 
     const getHistory = useCallback(async () => {
         try {
-            const response = await fetch("http://192.168.1.202:5000/history/servers", {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
-            });
-            const jsonData = await response.json();
-            setHistory(jsonData);
+            const response = await axiosInstance("/history/servers");
+            setHistory(response.data);
         } catch (error) {
             console.error(error.message);
         }
-    }, [token]);
+    }, [axiosInstance]);
 
     useEffect(() => {
-        if (token) {
             getHistory();
-        }
-    }, [token, getHistory]);
+
+    }, [getHistory]);
 
     const deleteServer = async (id) => { 
         try {
-            await fetch(`http://192.168.1.202:5000/history/${id}`, {
-                method: "DELETE",
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                }
-            });
+            await axiosInstance.delete(`/history/${id}`);
             setHistory(history.filter(record => record.id !== id));
         } catch (error) {
             console.error(error.message);
@@ -51,14 +41,12 @@ const HistoryServer = () => {
         e.preventDefault();
         try {
             const { id, server_name, reason_for_failure, date_of_failure, date_of_startup, status } = editingRecord;
-            await fetch(`http://192.168.1.202:5000/history/${id}`, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({ server_name, reason_for_failure, date_of_failure, date_of_startup, status, username }),
-            });
+            const body = {
+                server_name, reason_for_failure, date_of_failure, date_of_startup, status, username 
+            }
+            await axiosInstance.put(`/history/${id}`,
+                body,
+            );
             setEditingRecord(null);
             getHistory(); 
         } catch (error) {

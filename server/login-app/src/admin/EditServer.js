@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
-import { formatDate,validate,useToken  } from '../utils/Const';
-
+import { formatDate,validate  } from '../utils/Const';
+import useAxios from '../utils/axios';
 const EditServer = ({ server }) => {
 
     const [server_name, setServerName] = useState(server.server_name);
@@ -12,9 +12,9 @@ const EditServer = ({ server }) => {
     const [date_of_failure, setDateOfFailure] = useState(formatDate(server.date_of_failure));
     const [date_of_startup, setDateOfStartup] = useState(formatDate(server.date_of_startup));
     const [status, setStatus] = useState(server.status || "");
-    const token = useToken();
-    const [errors, setErrors] = useState({});
 
+    const [errors, setErrors] = useState({});
+    const axiosInstance = useAxios();
 
 
     const updateServer = async e => {
@@ -27,9 +27,7 @@ const EditServer = ({ server }) => {
         setErrors({}); 
         
         try {
-            if (!token) {
-                throw new Error('Token not found');
-            }
+
             const body = {
                 server_name,
                 location,
@@ -41,15 +39,9 @@ const EditServer = ({ server }) => {
                 date_of_startup: date_of_startup || null,
                 status
             };
-            const response = await fetch(`http://192.168.1.202:5000/servers/${server.id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json","Authorization": `Bearer ${token}` },
-                body: JSON.stringify(body)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Something went wrong");
+            const response = await axiosInstance.put(`/servers/${server.id}`, body);
+            if (response.status !== 200) {
+                throw new Error("Something went wrong");
             }
 
             window.location.reload();

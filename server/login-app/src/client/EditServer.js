@@ -1,13 +1,11 @@
 import React, { Fragment, useState } from "react";
 import { formatDate } from '../utils/Const';
-import { useToken  } from '../utils/Const';
-
+import useAxios from "../utils/axios";
 const EditServer = ({ server }) => {
     const [reason_for_failure, setReasonForFailure] = useState(server.reason_for_failure);
     const [date_of_failure, setDateOfFailure] = useState(formatDate(server.date_of_failure));
     const [date_of_startup, setDateOfStartup] = useState(formatDate(server.date_of_startup));
-    const token = useToken();
-
+    const axiosInstance = useAxios();
     const updateServer = async e => {
         e.preventDefault();
         try {
@@ -16,13 +14,9 @@ const EditServer = ({ server }) => {
                 date_of_failure: date_of_failure || null,
                 date_of_startup: date_of_startup || null,
             };
-            const response = await fetch(`http://192.168.1.202:5000/servers/date/${server.id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json", 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify(body)
-            });
+            const response = await axiosInstance.put(`/servers/date/${server.id}`, body);
 
-            if (!response.ok) {
+            if (response.status !== 200) {
                 throw new Error("Something went wrong");
             }
 
