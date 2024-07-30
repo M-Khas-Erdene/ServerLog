@@ -164,4 +164,15 @@ button {
 .circle-red {
     background-color: red;
 }
+form input[type='datetime-local'],
+form input[type='password'],
+form input[type='text']
+ {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
 
+  border: 0.5px solid gray;
+  outline: none;
+  box-sizing: border-box;
+}

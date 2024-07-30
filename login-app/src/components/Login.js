@@ -52,7 +52,7 @@ const Login = () => {
                         <p>Please enter your details</p>
                         {error && <Alert variant="danger">{error}</Alert>}
                         <form onSubmit={handleSubmit}>
-                            <input
+                            <input  style={{padding:"16px"}}
                                 type="text"
                                 placeholder="Username"
                                 value={username}
@@ -60,7 +60,7 @@ const Login = () => {
                                 required
                             />
                             <div className="pass-input-div">
-                                <input
+                                <input style={{padding:"16px"}}
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Password"
                                     value={password}

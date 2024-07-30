@@ -82,7 +82,7 @@ const InputServer = () => {
                 <Modal.Header closeButton>
                     <Modal.Title>Add New Server</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body style={{padding:"20px"}}>
                     <Form onSubmit={onSubmitForm}>
                         <Form.Group as={Row}>
                             <Form.Label column sm="4">Server Name</Form.Label>
@@ -195,25 +195,26 @@ const InputServer = () => {
                         <Form.Group as={Row}>
                             <Form.Label column sm="4">Status</Form.Label>
                             <Col sm="8">
-                                <div>
-                                    <Form.Check
+                                <div className="mt-2">
+                                    <Form.Check 
                                         inline
                                         type="radio"
                                         label="Active"
-                                        id="active"
+                                        id="Active"
                                         name="status"
-                                        value="active"
-                                        checked={status === "active"}
+                                        value="Active"
+                                        checked={status === "Active"}
                                         onChange={e => setStatus(e.target.value)}
                                     />
                                     <Form.Check
+                                    style={{paddingLeft:'10px'}}
                                         inline
                                         type="radio"
                                         label="Inactive"
-                                        id="inactive"
+                                        id="Inactive"
                                         name="status"
-                                        value="inactive"
-                                        checked={status === "inactive"}
+                                        value="Inactive"
+                                        checked={status === "Inactive"}
                                         onChange={e => setStatus(e.target.value)}
                                     />
                                 </div>
@@ -221,7 +222,7 @@ const InputServer = () => {
                             </Col>
                         </Form.Group>
 
-                        <Button variant="success" type="submit">
+                        <Button variant="success" type="submit" className="mt-4">
                             Add
                         </Button>
                     </Form>
