@@ -44,8 +44,7 @@ const HistoryServer = () => {
             const body = {
                 server_name, reason_for_failure, date_of_failure, date_of_startup, status, username 
             }
-            await axiosInstance.put(`/history/${id}`,
-                body,
+            await axiosInstance.put(`/history/${id}`,body,
             );
             setEditingRecord(null);
             getHistory(); 

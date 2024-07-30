@@ -13,7 +13,7 @@ body {
 }
 
 .container{
-    max-width: 1920px;
+    max-width: 1440px;
     padding: 5px;
 }
 .card {
@@ -164,3 +164,4 @@ button {
 .circle-red {
     background-color: red;
 }
+
