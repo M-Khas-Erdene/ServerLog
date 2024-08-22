@@ -51,7 +51,7 @@ const EditServer = ({ server }) => {
                                     <input
                                         type="datetime-local"
                                         className="form-control mb-2"
-                                        value={formatDate(date_of_failure)}
+                                        value={date_of_failure}
                                         onChange={e => setDateOfFailure(e.target.value)}
                                     />
                                 </div>
@@ -61,7 +61,7 @@ const EditServer = ({ server }) => {
                                     <input
                                         type="datetime-local"
                                         className="form-control mb-2"
-                                        value={formatDate(date_of_startup)}
+                                        value={date_of_startup}
                                         onChange={e => setDateOfStartup(e.target.value)}
                                     />
                                 </div>
